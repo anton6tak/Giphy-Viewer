@@ -1,4 +1,4 @@
-package com.example.gifviewver
+package com.example.giphyviewer
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

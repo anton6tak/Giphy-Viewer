@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/giphyListFragment">
+
+    <fragment
+        android:id="@+id/giphyListFragment"
+        android:name="com.example.giphyviewer.view.GiphyListFragment"
+        android:label="giphy_list_fragment"
+        tools:layout="@layout/giphy_list_fragment" />
+</navigation>

@@ -1,4 +1,4 @@
-package com.example.gifviewver
+package com.example.giphyviewer
 
 import org.junit.Test
 
