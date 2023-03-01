@@ -16,11 +16,11 @@ import dev.icerock.moko.mvvm.livedata.map
 import dev.icerock.moko.mvvm.livedata.mediatorOf
 import dev.icerock.moko.paging.LambdaPagedListDataSource
 import dev.icerock.moko.paging.Pagination
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 
 private const val PAGE_SIZE = 10
 

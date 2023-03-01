@@ -9,9 +9,9 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.statement.HttpResponse
 import io.ktor.serialization.kotlinx.json.json
+import javax.inject.Inject
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import javax.inject.Inject
 
 class AppRepository @Inject constructor() : GiphyListRepository {
     private val client = HttpClient(CIO) {
