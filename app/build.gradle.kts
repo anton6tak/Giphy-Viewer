@@ -67,6 +67,9 @@ dependencies {
 
     implementation(libs.hilt)
     kapt(libs.hiltCompiler)
+
+    implementation(libs.swipeRefreshLayout)
+    implementation(libs.glide)
 }
 
 kapt {
