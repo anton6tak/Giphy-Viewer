@@ -70,6 +70,7 @@ dependencies {
 
     implementation(libs.swipeRefreshLayout)
     implementation(libs.glide)
+    implementation(libs.mokoPaging)
 }
 
 kapt {

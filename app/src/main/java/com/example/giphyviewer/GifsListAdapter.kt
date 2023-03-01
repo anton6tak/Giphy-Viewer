@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ class GifsListAdapter(private val context: Context) :
     var items: List<Giph> = emptyList()
         set(value) {
             field = value
-            notifyDataSetChanged()
         }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -37,10 +35,10 @@ class GifsListAdapter(private val context: Context) :
 
         Glide
             .with(context)
-            .asGif()// replace with 'this' if it's in activity
+            .asGif()
             .load(items[position].imageData.placeholderImage.url)
             .load(items[position].imageData.gif.url)
-            .error(R.drawable.ic_launcher_background) // show error drawable if the image is not a gif
+            .error(R.drawable.ic_launcher_background)
             .into(viewHolder.gif)
     }
 
