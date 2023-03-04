@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -20,6 +22,12 @@ android {
         targetSdk = 33
         versionCode = 1
         versionName = "1.0"
+
+        val giphyApiKey = gradleLocalProperties(rootDir).getProperty("giphy_api_key") as String
+        val url = "https://api.giphy.com/v1/gifs/trending"
+
+        buildConfigField("String", "BASE_URL", "\"$url\"")
+        buildConfigField("String", "GIPHY_API_KEY", "\"$giphyApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

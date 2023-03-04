@@ -19,15 +19,17 @@ class AppRepository @Inject constructor() : GiphyListRepository {
             json(Json { ignoreUnknownKeys = true })
         }
     }
+    private val apiKey = BuildConfig.GIPHY_API_KEY
+    private val baseUrl: String = BuildConfig.BASE_URL
 
     private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun loadGiphs(limit: Int, offset: Int): ApiResponse {
 
         val response: HttpResponse =
-            client.get("https://api.giphy.com/v1/gifs/trending") {
+            client.get(baseUrl) {
                 url {
-                    parameters.append("api_key", "EEjeWKnay8eNwJ091mC2ffGuQe96tdBN")
+                    parameters.append("api_key", apiKey)
                     parameters.append("limit", limit.toString())
                     parameters.append("offset", offset.toString())
                 }
