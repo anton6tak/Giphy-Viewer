@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.example.giphyviewer.databinding.GifItemBinding
 import com.example.giphyviewer.databinding.LoadingItemBinding
@@ -23,7 +24,7 @@ class GifsListAdapter(private val context: Context) :
 
     class GifViewHolder(binding: GifItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val title: TextView = binding.titleTextView
-        val gif: ImageView = binding.gif
+        val gifImage: ImageView = binding.gifImage
     }
 
     class LoadingViewHolder(binding: LoadingItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -42,14 +43,10 @@ class GifsListAdapter(private val context: Context) :
                 GifViewHolder(binding)
             }
             else -> {
-                val binding =
-                    LoadingItemBinding.inflate(
-                        LayoutInflater.from(viewGroup.context),
-                        viewGroup,
-                        false
-                    )
+                val binding = LoadingItemBinding.inflate(
+                    LayoutInflater.from(viewGroup.context), viewGroup, false
+                )
                 LoadingViewHolder(binding)
-
             }
         }
     }
@@ -63,21 +60,20 @@ class GifsListAdapter(private val context: Context) :
 
                 viewHolder.title.text = item.gif.title
 
-                Glide
-                    .with(context)
-                    .asGif()
-                    .load(item.gif.imageData.placeholderImage.url)
-                    .load(item.gif.imageData.gif.url)
-                    .error(R.drawable.ic_launcher_background)
-                    .into(viewHolder.gif)
+                val circularProgressDrawable = CircularProgressDrawable(context)
+                circularProgressDrawable.strokeWidth = 10f
+                circularProgressDrawable.centerRadius = 90f
+                circularProgressDrawable.start()
+
+                Glide.with(context).asGif().load(item.gif.url)
+                    .error(R.drawable.ic_launcher_background).placeholder(circularProgressDrawable)
+                    .into(viewHolder.gifImage)
             }
             1 -> {
                 viewHolder as LoadingViewHolder
                 viewHolder.indicator.visibility = View.VISIBLE
             }
         }
-
-
     }
 
     override fun getItemCount() = items.size

@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.giphyviewer.GifsListAdapter
 import com.example.giphyviewer.R
 import com.example.giphyviewer.databinding.GiphyListFragmentBinding
-import com.example.giphyviewer.models.Giph
 import dagger.hilt.android.AndroidEntryPoint
 import dev.icerock.moko.mvvm.ResourceState
 import dev.icerock.moko.mvvm.utils.bindNotNull
@@ -100,14 +99,6 @@ class GiphyListFragment : Fragment() {
 
         binding.retryButton.setOnClickListener(clickListener)
     }
-
-
-//    private fun GiphyListViewModel.UnitItem.toUnitItem(): GiphyListViewModel.UnitItem {
-//        return when (this) {
-//            is GiphyListViewModel.UnitItem.GifUnit -> GiphyListViewModel.UnitItem.GifUnit(gif = gif)
-//            GiphyListViewModel.UnitItem.LoadingItem -> GiphyListViewModel.UnitItem.LoadingItem
-//        }
-//    }
 
     private fun bindReachEnd(
         recyclerView: RecyclerView,

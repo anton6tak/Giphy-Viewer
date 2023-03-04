@@ -3,7 +3,7 @@ package com.example.giphyviewer.view
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.giphyviewer.AppRepository
-import com.example.giphyviewer.models.Giph
+import com.example.giphyviewer.models.Gif
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.icerock.moko.mvvm.ResourceState
 import dev.icerock.moko.mvvm.livedata.LiveData
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 
-private const val PAGE_SIZE = 5
+private const val PAGE_SIZE = 10
 
 @HiltViewModel
 class GiphyListViewModel @Inject constructor(private val appRepository: AppRepository) :
@@ -28,14 +28,13 @@ class GiphyListViewModel @Inject constructor(private val appRepository: AppRepos
     private val _action: Channel<Action> = Channel(Channel.BUFFERED)
     val action: Flow<Action> get() = _action.receiveAsFlow()
 
-    private val pagination = Pagination(
-        parentScope = viewModelScope,
-        dataSource = LambdaPagedListDataSource<Giph> { currentList ->
+    private val pagination = Pagination(parentScope = viewModelScope,
+        dataSource = LambdaPagedListDataSource<Gif> { currentList ->
             val newItems =
-                appRepository.loadGiphs(limit = PAGE_SIZE, offset = currentList?.size ?: 0).data
+                appRepository.loadGifs(limit = PAGE_SIZE, offset = currentList?.size ?: 0)
             newItems
         },
-        comparator = { a, b -> a.imageData.gif.url.compareTo(b.imageData.gif.url) },
+        comparator = { a, b -> a.url.compareTo(b.url) },
         nextPageListener = { result ->
             if (result.isFailure) {
                 _action.trySend(Action.ShowError(message = "Next page load failed"))
@@ -45,28 +44,24 @@ class GiphyListViewModel @Inject constructor(private val appRepository: AppRepos
             if (result.isFailure) {
                 _action.trySend(Action.ShowError(message = "Refresh failed"))
             }
+        })
+
+    val state: LiveData<ResourceState<List<UnitItem>, Exception>> = pagination.state.dataTransform {
+            mediatorOf(this, pagination.nextPageLoading) { list, isNextPageLoad ->
+                val units: List<UnitItem> = list.map<Gif, UnitItem> { gif ->
+                    UnitItem.GifUnit(
+                        gif = gif,
+                    )
+                }
+
+                if (isNextPageLoad) units + UnitItem.LoadingItem
+                else units
+            }
+        }.errorTransform {
+            map {
+                Exception(it)
+            }
         }
-    )
-
-    val state: LiveData<ResourceState<List<UnitItem>, Exception>> =
-        pagination.state
-            .dataTransform {
-                mediatorOf(this, pagination.nextPageLoading) { list, isNextPageLoad ->
-                    val units: List<UnitItem> = list.map<Giph, UnitItem> { gif ->
-                        UnitItem.GifUnit(
-                            gif = gif,
-                        )
-                    }
-
-                    if (isNextPageLoad) units + UnitItem.LoadingItem
-                    else units
-                }
-            }
-            .errorTransform {
-                map {
-                    Exception(it)
-                }
-            }
 
     fun start() = apply { loadData() }
 
@@ -88,7 +83,7 @@ class GiphyListViewModel @Inject constructor(private val appRepository: AppRepos
     }
 
     sealed interface UnitItem {
-        data class GifUnit(val gif: Giph) : UnitItem
+        data class GifUnit(val gif: Gif) : UnitItem
         object LoadingItem : UnitItem
     }
 

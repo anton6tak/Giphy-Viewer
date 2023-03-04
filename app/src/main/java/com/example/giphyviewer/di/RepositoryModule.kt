@@ -1,7 +1,7 @@
 package com.example.giphyviewer.di
 
 import com.example.giphyviewer.AppRepository
-import com.example.giphyviewer.models.GiphyListRepository
+import com.example.giphyviewer.models.GifListRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,5 +13,5 @@ import io.ktor.client.engine.cio.*
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
     @Binds
-    abstract fun providesAppRepository(repo: AppRepository): GiphyListRepository
+    abstract fun providesAppRepository(repo: AppRepository): GifListRepository
 }

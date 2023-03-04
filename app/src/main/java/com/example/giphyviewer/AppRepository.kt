@@ -1,7 +1,9 @@
 package com.example.giphyviewer
 
-import com.example.giphyviewer.models.ApiResponse
-import com.example.giphyviewer.models.GiphyListRepository
+import com.example.giphyviewer.models.Gif
+import com.example.giphyviewer.models.GifListRepository
+import com.example.giphyviewer.models.network.ApiResponse
+import com.example.giphyviewer.models.network.toGif
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -13,7 +15,7 @@ import javax.inject.Inject
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class AppRepository @Inject constructor() : GiphyListRepository {
+class AppRepository @Inject constructor() : GifListRepository {
     private val client = HttpClient(CIO) {
         install(ContentNegotiation) {
             json(Json { ignoreUnknownKeys = true })
@@ -24,7 +26,7 @@ class AppRepository @Inject constructor() : GiphyListRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    override suspend fun loadGiphs(limit: Int, offset: Int): ApiResponse {
+    override suspend fun loadGifs(limit: Int, offset: Int): List<Gif> {
         val response: HttpResponse =
             client.get(baseUrl) {
                 url {
@@ -34,6 +36,6 @@ class AppRepository @Inject constructor() : GiphyListRepository {
                 }
             }
 
-        return json.decodeFromString(response.body())
+        return json.decodeFromString<ApiResponse>(response.body()).data.map { it.toGif() }
     }
 }
