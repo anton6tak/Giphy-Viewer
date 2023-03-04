@@ -8,38 +8,76 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.giphyviewer.models.Giph
+import com.example.giphyviewer.databinding.GifItemBinding
+import com.example.giphyviewer.databinding.LoadingItemBinding
+import com.example.giphyviewer.view.GiphyListViewModel
+import com.google.android.material.progressindicator.CircularProgressIndicator
 
 class GifsListAdapter(private val context: Context) :
-    RecyclerView.Adapter<GifsListAdapter.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var items: List<Giph> = emptyList()
+    var items: List<GiphyListViewModel.UnitItem> = emptyList()
         set(value) {
             field = value
         }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title: TextView = view.findViewById(R.id.title_text_view)
-        val gif: ImageView = view.findViewById(R.id.gif)
+    class GifViewHolder(binding: GifItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val title: TextView = binding.titleTextView
+        val gif: ImageView = binding.gif
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.gif_item, viewGroup, false)
-
-        return ViewHolder(view)
+    class LoadingViewHolder(binding: LoadingItemBinding) : RecyclerView.ViewHolder(binding.root) {
+        val indicator: CircularProgressIndicator = binding.progressIndicator
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        viewHolder.title.text = items[position].title
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position] is GiphyListViewModel.UnitItem.GifUnit) 0 else 1
+    }
 
-        Glide
-            .with(context)
-            .asGif()
-            .load(items[position].imageData.placeholderImage.url)
-            .load(items[position].imageData.gif.url)
-            .error(R.drawable.ic_launcher_background)
-            .into(viewHolder.gif)
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            0 -> {
+                val binding =
+                    GifItemBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+                GifViewHolder(binding)
+            }
+            else -> {
+                val binding =
+                    LoadingItemBinding.inflate(
+                        LayoutInflater.from(viewGroup.context),
+                        viewGroup,
+                        false
+                    )
+                LoadingViewHolder(binding)
+
+            }
+        }
+    }
+
+    override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
+        when (getItemViewType(position)) {
+            0 -> {
+                viewHolder as GifViewHolder
+                val item: GiphyListViewModel.UnitItem.GifUnit =
+                    items[position] as GiphyListViewModel.UnitItem.GifUnit
+
+                viewHolder.title.text = item.gif.title
+
+                Glide
+                    .with(context)
+                    .asGif()
+                    .load(item.gif.imageData.placeholderImage.url)
+                    .load(item.gif.imageData.gif.url)
+                    .error(R.drawable.ic_launcher_background)
+                    .into(viewHolder.gif)
+            }
+            1 -> {
+                viewHolder as LoadingViewHolder
+                viewHolder.indicator.visibility = View.VISIBLE
+            }
+        }
+
+
     }
 
     override fun getItemCount() = items.size

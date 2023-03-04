@@ -25,7 +25,6 @@ class AppRepository @Inject constructor() : GiphyListRepository {
     private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun loadGiphs(limit: Int, offset: Int): ApiResponse {
-
         val response: HttpResponse =
             client.get(baseUrl) {
                 url {

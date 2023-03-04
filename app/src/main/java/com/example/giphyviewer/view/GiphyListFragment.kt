@@ -44,15 +44,15 @@ class GiphyListFragment : Fragment() {
 
         val gifsListAdapter = GifsListAdapter(requireContext())
         with(binding.recyclerView) {
-            this.adapter = gifsListAdapter
             this.layoutManager = LinearLayoutManager(requireContext())
+            this.adapter = gifsListAdapter
             bindReachEnd(this, gifsListAdapter)
         }
 
         bindToViewModel(gifsListAdapter)
     }
 
-    private fun bindToViewModel(adapter: GifsListAdapter){
+    private fun bindToViewModel(adapter: GifsListAdapter) {
         binding.swipeRefresh.setOnRefreshListener {
             viewModel.onRefresh {
                 binding.swipeRefresh.isRefreshing = false
@@ -71,7 +71,7 @@ class GiphyListFragment : Fragment() {
     }
 
     private fun bindState(
-        state: ResourceState<List<Giph>, Exception>,
+        state: ResourceState<List<GiphyListViewModel.UnitItem>, Exception>,
         gifsListAdapter: GifsListAdapter
     ) {
         binding.recyclerView.visibility = if (state.isSuccess()) View.VISIBLE else View.GONE
@@ -79,8 +79,9 @@ class GiphyListFragment : Fragment() {
         binding.circularProgressIndicator.visibility =
             if (state.isLoading()) View.VISIBLE else View.GONE
 
-        gifsListAdapter.items = state.dataValue()?: emptyList()
-            binding.recyclerView.post(Runnable { gifsListAdapter.notifyDataSetChanged() })
+        gifsListAdapter.items = state.dataValue() ?: emptyList()
+
+        binding.recyclerView.post(Runnable { gifsListAdapter.notifyDataSetChanged() })
 
         binding.retryButton.visibility =
             if (state.isFailed() || state.isEmpty()) View.VISIBLE else View.GONE
@@ -100,6 +101,13 @@ class GiphyListFragment : Fragment() {
         binding.retryButton.setOnClickListener(clickListener)
     }
 
+
+//    private fun GiphyListViewModel.UnitItem.toUnitItem(): GiphyListViewModel.UnitItem {
+//        return when (this) {
+//            is GiphyListViewModel.UnitItem.GifUnit -> GiphyListViewModel.UnitItem.GifUnit(gif = gif)
+//            GiphyListViewModel.UnitItem.LoadingItem -> GiphyListViewModel.UnitItem.LoadingItem
+//        }
+//    }
 
     private fun bindReachEnd(
         recyclerView: RecyclerView,
